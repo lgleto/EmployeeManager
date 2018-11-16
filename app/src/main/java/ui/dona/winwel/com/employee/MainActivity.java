@@ -36,10 +36,18 @@ public class MainActivity extends AppCompatActivity {
         adapter = new EmployeeAdapter();
         listView.setAdapter(adapter);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         VolleyHelper.getInstance().getAll(this, "/employee/", new VolleyHelper.OnGetDataListener() {
             @Override
             public void onSucess(String data) {
                 try {
+                    employees.clear();
                     JSONArray jsonArray = new JSONArray(data);
                     for(int i = 0; i < jsonArray.length(); i++){
                         Employee e =  Employee.fromJson((JSONObject)jsonArray.get(i));
@@ -79,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class EmployeeAdapter extends BaseAdapter {
+    class EmployeeAdapter extends BaseAdapter implements View.OnClickListener {
 
         @Override
         public int getCount() {
@@ -109,8 +117,21 @@ public class MainActivity extends AppCompatActivity {
             textViewName.setText( employee.getFirstName() + " " + employee.getLastName());
             textViewPhone.setText(employee.getPhoneNumber());
 
+            convertView.setOnClickListener(this);
+            convertView.setClickable(true);
+            convertView.setTag(new Integer(position));
 
             return convertView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = (int)v.getTag();
+            Employee employee = employees.get(position);
+            Intent intent =  new Intent(MainActivity.this, EmployeeDetailActivity.class);
+            intent.putExtra(EmployeeDetailActivity.EMPLOYEE_JSON, employee.toJson().toString());
+            startActivity(intent);
+
         }
     }
 }

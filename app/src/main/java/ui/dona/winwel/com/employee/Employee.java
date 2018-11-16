@@ -1,5 +1,7 @@
 package ui.dona.winwel.com.employee;
 
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +11,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class Employee {
+public class Employee   {
 
     int        employeeId  ;
     String     firstName   ;
@@ -95,13 +97,14 @@ public class Employee {
 
     JSONObject toJson(){
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("employeeId" , employeeId );
             jsonObject.put("firstName"  , firstName  );
             jsonObject.put("lastName"   , lastName   );
-            jsonObject.put("dateOfBirth", dateOfBirth);
+            jsonObject.put("dateOfBirth", format.format(dateOfBirth));
             jsonObject.put("phoneNumber", phoneNumber);
         } catch (JSONException e) {
             e.printStackTrace();

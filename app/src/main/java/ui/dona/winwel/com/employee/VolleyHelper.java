@@ -78,6 +78,53 @@ public class VolleyHelper {
                 listener.onError(error.toString());
             }
         });
+
+        queue.add(jsonObjectRequest);
+    }
+
+    public void update(Context context, String path, String id, JSONObject jsonObject, final OnAddListener listener){
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequest jsonObjectRequest =  new JsonObjectRequest(
+                JsonObjectRequest.Method.PUT,
+                SERVER_API + path +id,
+                jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onSucess(response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onError(error.toString());
+            }
+        });
+
+        queue.add(jsonObjectRequest);
+    }
+
+    public void delete(Context context, String path, String id, final OnAddListener listener){
+        queue = Volley.newRequestQueue(context);
+
+        StringRequest stringRequest =  new StringRequest(
+                StringRequest.Method.DELETE,
+                SERVER_API + path +id,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        listener.onSucess(response);
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onError(error.toString());
+            }
+        });
+
+
+        queue.add(stringRequest);
     }
 
 
