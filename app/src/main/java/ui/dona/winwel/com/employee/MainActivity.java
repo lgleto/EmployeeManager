@@ -1,8 +1,11 @@
 package ui.dona.winwel.com.employee;
 
+import android.app.Service;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +43,18 @@ public class MainActivity extends AppCompatActivity {
         adapter = new EmployeeAdapter();
         listView.setAdapter(adapter);
 
+        FirebaseMessaging.getInstance().subscribeToTopic("general")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "subscribed general";
+                        if (!task.isSuccessful()) {
+                            msg = "failed to subscribed general";
+                        }
+                        Log.d(TAG, msg);
+                    }
+                });
+
 
     }
 
@@ -53,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
                         Employee e =  Employee.fromJson((JSONObject)jsonArray.get(i));
                         employees.add(e);
                     }
+
+                    Intent intentService = new Intent(MainActivity.this, ScheduleService.class);
+                    String [] employeesStr = new String[employees.size()];
+                    for (int i = 0; i < employees.size(); i++){
+                        employeesStr[i]=employees.get(i).toJson().toString();
+                    }
+                    intentService.putExtra(ScheduleService.EMPLOYEES,employeesStr);
+                    startService(intentService);
 
                     adapter.notifyDataSetChanged();
 

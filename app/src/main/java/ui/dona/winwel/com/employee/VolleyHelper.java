@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class VolleyHelper {
 
-    public static final String SERVER_API = "http://192.168.1.36:5000/api";
+    public static final String SERVER_API = "http://192.168.56.201:5000/api";
 
     private final int TIMEOUT = 5000;
 
